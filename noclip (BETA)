@@ -1,5 +1,5 @@
 -- MADE BY Tymbark7372
-
+-- click "E" to activate
 -- you can change walkspeed in line 17 if u want
 
 local player = game.Players.LocalPlayer
