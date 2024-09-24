@@ -27,7 +27,7 @@ title.BackgroundColor3 = Color3.new(0, 0, 0)
 title.Position = UDim2.new(-0.0517418832, 0, -0.054933358, 0)
 title.Size = UDim2.new(0, 235, 0, 19)
 title.Font = Enum.Font.SciFi
-title.Text = "Coordinates Grabber Gui (by Tymbark7372)"
+title.Text = "Coordinates Grabber Gui"
 title.TextColor3 = Color3.new(1, 1, 1)
 title.TextSize = 14
  
