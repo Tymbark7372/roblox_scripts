@@ -1,11 +1,60 @@
 -- MADE BY Tymbark7372
+
 -- click "E" to activate
--- you can change walkspeed in line 17 if u want
 
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local noclip = false
+
+local screenGui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local toggleButton = Instance.new("TextButton")
+local statusLabel = Instance.new("TextLabel")
+local closeButton = Instance.new("TextButton")
+local UIS = game:GetService("UserInputService")
+
+screenGui.Parent = player:WaitForChild("PlayerGui")
+frame.Parent = screenGui
+frame.Size = UDim2.new(0.2, 0, 0.1, 0) 
+frame.Position = UDim2.new(0.4, 0, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.BackgroundTransparency = 0.2
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+toggleButton.Parent = frame
+toggleButton.Size = UDim2.new(1, -20, 0.5, -10)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 204, 102)
+toggleButton.Text = "Toggle Noclip"
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.TextSize = 20
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.BorderSizePixel = 0
+
+statusLabel.Parent = frame
+statusLabel.Size = UDim2.new(1, -20, 0.5, -10)
+statusLabel.Position = UDim2.new(0, 10, 0.5, 0)
+statusLabel.BackgroundTransparency = 1
+statusLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
+statusLabel.TextSize = 18
+statusLabel.Text = "Noclip: OFF"
+
+closeButton.Parent = frame
+closeButton.Size = UDim2.new(0.15, 0, 0.4, 0)
+closeButton.Position = UDim2.new(0.85, 0, 0.3, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 24
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BorderSizePixel = 0
+
+local function updateStatus()
+	statusLabel.Text = "Noclip: " .. (noclip and "ON" or "OFF")
+end
 
 local function toggleNoclip()
 	noclip = not noclip
@@ -15,10 +64,16 @@ local function toggleNoclip()
 		end
 	end
 	humanoid.WalkSpeed = noclip and 16 or 16
+	updateStatus()
 end
 
-local UserInputService = game:GetService("UserInputService")
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+toggleButton.MouseButton1Click:Connect(toggleNoclip)
+
+closeButton.MouseButton1Click:Connect(function()
+	screenGui:Destroy()
+end)
+
+UIS.InputBegan:Connect(function(input, gameProcessedEvent)
 	if input.KeyCode == Enum.KeyCode.E and not gameProcessedEvent then
 		toggleNoclip()
 	end
@@ -45,4 +100,5 @@ character.Humanoid.Died:Connect(function()
 			part.CanCollide = true
 		end
 	end
+	updateStatus()
 end)
