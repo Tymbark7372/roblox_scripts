@@ -1,0 +1,104 @@
+-- MADE BY Tymbark7372
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "WalkspeedJumpPowerGUI"
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 200)
+frame.Position = UDim2.new(0.5, -125, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local dragging = false
+local dragStart
+local startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+frame.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		update(input)
+	end
+end)
+
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, 0, 0, 40)
+label.Text = "Walkspeed & Jump Power"
+label.TextColor3 = Color3.fromRGB(255, 255, 0)
+label.BackgroundTransparency = 0.5
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.Font = Enum.Font.GothamBold
+label.TextScaled = true
+label.Parent = frame
+
+local walkspeedBox = Instance.new("TextBox")
+walkspeedBox.Size = UDim2.new(1, 0, 0, 40)
+walkspeedBox.Position = UDim2.new(0, 0, 0, 50)
+walkspeedBox.PlaceholderText = "Enter Walkspeed"
+walkspeedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+walkspeedBox.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+walkspeedBox.Font = Enum.Font.Gotham
+walkspeedBox.TextScaled = true
+walkspeedBox.Parent = frame
+
+local jumpPowerBox = Instance.new("TextBox")
+jumpPowerBox.Size = UDim2.new(1, 0, 0, 40)
+jumpPowerBox.Position = UDim2.new(0, 0, 0, 100)
+jumpPowerBox.PlaceholderText = "Enter Jump Power"
+jumpPowerBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+jumpPowerBox.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+jumpPowerBox.Font = Enum.Font.Gotham
+jumpPowerBox.TextScaled = true
+jumpPowerBox.Parent = frame
+
+local footerLabel = Instance.new("TextLabel")
+footerLabel.Size = UDim2.new(1, 0, 0, 30)
+footerLabel.Position = UDim2.new(0, 0, 1, -30)
+footerLabel.Text = "Made by Tymbark7372"
+footerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+footerLabel.BackgroundTransparency = 1
+footerLabel.Font = Enum.Font.Gotham
+footerLabel.TextScaled = true
+footerLabel.Parent = frame
+
+walkspeedBox.FocusLost:Connect(function(enterPressed)
+	if enterPressed then
+		local walkspeed = tonumber(walkspeedBox.Text)
+		if walkspeed and walkspeed > 0 then
+			humanoid.WalkSpeed = walkspeed
+		end
+	end
+end)
+
+jumpPowerBox.FocusLost:Connect(function(enterPressed)
+	if enterPressed then
+		local jumpPower = tonumber(jumpPowerBox.Text)
+		if jumpPower and jumpPower > 0 then
+			humanoid.JumpPower = jumpPower
+		end
+	end
+end)
