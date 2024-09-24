@@ -1,0 +1,48 @@
+-- MADE BY Tymbark7372
+
+-- you can change walkspeed in line 17 if u want
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local noclip = false
+
+local function toggleNoclip()
+	noclip = not noclip
+	for _, part in ipairs(character:GetChildren()) do
+		if part:IsA("BasePart") then
+			part.CanCollide = not noclip
+		end
+	end
+	humanoid.WalkSpeed = noclip and 16 or 16
+end
+
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if input.KeyCode == Enum.KeyCode.E and not gameProcessedEvent then
+		toggleNoclip()
+	end
+end)
+
+game:GetService("RunService").Stepped:Connect(function()
+	if noclip then
+		for _, part in ipairs(workspace:GetChildren()) do
+			if part:IsA("BasePart") and character.HumanoidRootPart.Position.Y < part.Position.Y + part.Size.Y / 2 then
+				part.CanCollide = false
+			else
+				part.CanCollide = true
+			end
+		end
+		character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+	end
+end)
+
+character.Humanoid.Died:Connect(function()
+	noclip = false
+	humanoid.WalkSpeed = 16
+	for _, part in ipairs(character:GetChildren()) do
+		if part:IsA("BasePart") then
+			part.CanCollide = true
+		end
+	end
+end)
