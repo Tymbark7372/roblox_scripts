@@ -1,0 +1,56 @@
+local scriptActive = false
+local teleportPosition = Vector3.new(-30, 61, 1)
+local player = game.Players.LocalPlayer
+
+local function createGui()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "TeleportGui"
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(0, 100, 0, 50)
+    toggleButton.Position = UDim2.new(0, 10, 0, 10)
+    toggleButton.Text = "Toggle Teleport"
+    toggleButton.Parent = screenGui
+
+    toggleButton.Active = true
+    toggleButton.Draggable = true
+
+    toggleButton.MouseButton1Click:Connect(function()
+        scriptActive = not scriptActive
+        toggleButton.Text = scriptActive and "Teleport: On" or "Teleport: Off"
+    end)
+end
+
+local function teleportPlayer()
+    if not scriptActive then return end
+
+    local targetPart = nil
+
+    for _, part in ipairs(workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Name == "speedbox" then
+            targetPart = part
+            break
+        end
+    end
+
+    local character = player.Character
+    if targetPart then
+        character:SetPrimaryPartCFrame(targetPart.CFrame)
+    else
+        character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
+    end
+end
+
+createGui()
+
+player.CharacterAdded:Connect(function()
+    player.Character:WaitForChild("HumanoidRootPart")
+    createGui()
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if scriptActive then
+        teleportPlayer()
+    end
+end)
