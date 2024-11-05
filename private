@@ -1,0 +1,23 @@
+local player = game.Players.LocalPlayer
+
+local function removeCharacterGuis(character)
+    for _, child in ipairs(character:GetDescendants()) do
+        if child:IsA("BillboardGui") or child:IsA("SurfaceGui") then
+            child:Destroy()
+        end
+    end
+end
+
+player.CharacterAdded:Connect(function(character)
+    wait(0.5)
+    removeCharacterGuis(character)
+
+    character:WaitForChild("Humanoid").Died:Connect(function()
+        wait(0.5)
+        removeCharacterGuis(character)
+    end)
+end)
+
+if player.Character then
+    removeCharacterGuis(player.Character)
+end
