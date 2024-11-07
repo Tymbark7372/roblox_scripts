@@ -1,5 +1,5 @@
 local scriptActive = false
-local teleportPosition = Vector3.new(-30, 61, 1)
+local teleportPosition = Vector3.new(320, -58, 30)
 local player = game.Players.LocalPlayer
 
 local function createGui()
