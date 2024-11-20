@@ -1,0 +1,76 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local anchored = false
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 100, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 20)
+button.Text = "Toggle Anchor"
+button.Parent = screenGui
+button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+button.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+local dragStart
+local dragOffset
+
+local function startDrag(input)
+    dragStart = input.Position
+    dragOffset = button.Position
+end
+
+local function drag(input)
+    local delta = input.Position - dragStart
+    button.Position = UDim2.new(0, dragOffset.X + delta.X, 0, dragOffset.Y + delta.Y)
+end
+
+local function stopDrag(input)
+    dragStart = nil
+end
+
+button.InputBegan:Connect(function(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        startDrag(input)
+    end
+end)
+
+button.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragStart then
+        drag(input)
+    end
+end)
+
+button.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        stopDrag(input)
+    end
+end)
+
+local function toggleAnchor()
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if anchored then
+            for _, part in ipairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Anchored = false
+                end
+            end
+            anchored = false
+            button.Text = "Anchor"
+        else
+            for _, part in ipairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.Anchored = true
+                end
+            end
+            anchored = true
+            button.Text = "Unanchor"
+        end
+    end
+end
+
+button.MouseButton1Click:Connect(function()
+    toggleAnchor()
+end)
