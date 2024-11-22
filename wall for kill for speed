@@ -1,0 +1,42 @@
+--wall maker for kill for speed (spawn)
+local function createWall(size, position, orientation)
+    local wall = Instance.new("Part")
+    wall.Size = size
+    wall.Anchored = true
+    wall.Position = position
+    wall.Orientation = orientation or Vector3.new(0, 0, 0)
+    wall.Parent = workspace
+end
+
+local function createWhiteLightWallWithDistance(size, position)
+    local wall = Instance.new("Part")
+    wall.Size = size
+    wall.Anchored = true
+    wall.Position = position
+    wall.BrickColor = BrickColor.new("Institutional white")
+    wall.Material = Enum.Material.Neon
+    wall.Parent = workspace
+    wall.EmissiveColor = Color3.fromRGB(255, 255, 255)
+    local pointLight = Instance.new("PointLight")
+    pointLight.Parent = wall
+    pointLight.Color = Color3.fromRGB(255, 255, 255)
+    pointLight.Range = 100
+    pointLight.Brightness = 10
+    pointLight.Shadows = true
+end
+
+local height = 50
+local thickness = 1
+local walls = {
+    {size = Vector3.new(84, height, thickness), position = Vector3.new(0, 61, -14)},
+    {size = Vector3.new(84, height, thickness), position = Vector3.new(0, 61, 14)},
+    {size = Vector3.new(thickness, height, 28), position = Vector3.new(42, 61, 0)},
+    {size = Vector3.new(thickness, height, 28), position = Vector3.new(-42, 61, 0)},
+}
+
+for _, wallData in ipairs(walls) do
+    createWall(wallData.size, wallData.position)
+end
+
+createWall(Vector3.new(84, thickness, 28), Vector3.new(0, 61 - height / 2, 0))
+createWhiteLightWallWithDistance(Vector3.new(84, thickness, 28), Vector3.new(0, 61 + height / 2, 0))
