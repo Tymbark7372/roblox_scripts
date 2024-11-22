@@ -1,0 +1,72 @@
+--auto clicking backspace (can be used for unequiping items)
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ToggleButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ResetOnSpawn = false
+
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 200, 0, 100)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+Frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+
+ToggleButton.Parent = Frame
+ToggleButton.Size = UDim2.new(0, 180, 0, 50)
+ToggleButton.Position = UDim2.new(0, 10, 0, 25)
+ToggleButton.Text = "Toggle Backspace Spam"
+ToggleButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+
+-- Dragging functionality
+local UIS = game:GetService("UserInputService")
+local dragging, dragInput, startPos, startInputPos
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        startPos = Frame.Position
+        startInputPos = input.Position
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+Frame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - startInputPos
+        Frame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- Toggle Functionality
+local spamming = false
+local function spamBackspace()
+    while spamming do
+        game:GetService("VirtualInputManager"):SendKeyEvent(true, "Backspace", false, nil)
+        task.wait(0.1)
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(function()
+    spamming = not spamming
+    ToggleButton.Text = spamming and "Stop Backspace Spam" or "Start Backspace Spam"
+    if spamming then
+        spamBackspace()
+    end
+end)
